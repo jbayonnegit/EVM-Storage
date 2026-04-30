@@ -4,6 +4,7 @@ pragma solidity ^0.8.30;
 
 contract Logic {
 
+	uint256	sInvariant = 42;
 	uint256	srandomNumber;
 
 	function setNumber( uint256 number ) external 
@@ -11,19 +12,46 @@ contract Logic {
 		srandomNumber = number;
 	}
 
+	function setInvariantNumber() external 
+	{
+		sInvariant = 42;
+	}
+
 	function getNumber() external view returns ( uint256 )
 	{
 		return ( srandomNumber );
 	}
 
+	function getInvariantNumber() external view returns ( uint256 )
+	{
+		return ( sInvariant );
+	}
+
+	fallback() external payable
+	{
+
+	}
+
+	receive() external payable
+	{
+		
+	}
 }
 
 contract MinimalProxy {
 
+	address	immutable s_owner;
 	bytes32 constant IMPLEMENTATION_LOCATION = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
 
+	constructor( address owner )
+	{
+		s_owner = owner;
+	}
+	
 	function setImplementation( address new_ ) public
 	{
+		if ( msg.sender != s_owner )
+			revert("42");
 		assembly
 		{
 			sstore( IMPLEMENTATION_LOCATION, new_ )
