@@ -53,7 +53,7 @@ contract MappingTest is Test
 	/**
 	 * Simple use of vm.load() in order to read storage of _contract.
 	 * 
-	 * @notice this test runs perfectly with public and none plublic variable.
+	 * @notice this test runs perfectly with public and private variable.
 	 */
 	function test_readMappingStoragevm() public
 	{
