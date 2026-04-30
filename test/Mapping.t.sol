@@ -3,7 +3,7 @@
 /**
  * @title Mapping Storage Exploration
  * @author Jbayonne
- * @notice Learning Project
+ * @notice Learning Project - No AI use to code
  * 
  * This test file deploy a Mapping contract from src/Mapping.sol.
  * It shows how we can access to private value reading storage with two differents methodes.

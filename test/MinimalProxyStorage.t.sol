@@ -1,9 +1,9 @@
 /**
  * @title Storage throught proxies
  * @author Jbayonne
- * @notice Learning Project
+ * @notice Learning Project - No AI use to code
  * 
- * Exploring storage in proxy contract with fuzzTest and StdInvariant.
+ * Exploring storage in proxy contract with FuzzTest and StdInvariant.
  */
 
 // SPDX-License-Identifier : MIT
@@ -43,4 +43,38 @@ contract MinimalProxyStorageTest is Test
         assertEq( _imp, address(implementation));
     }
 
+    /** 
+     * 
+     * @param nb -- fuzzing test_fuzz_implementaion
+     * 
+     * This function test a my MinimalProxy contract by setting and reading slot 0 of storage layout.
+     * @notice forge test test/MinimalProxyStorageTest.sol --fuzz-runs <n_iteration> : in order 
+     * to run n_iteration tests.
+    */
+    function test_setNumber( uint256 nb ) public
+    {
+        // Deploying Logic Contract
+        Logic mImplementation = new Logic();
+
+        _minimalProxy.setImplementation( address( mImplementation) );
+
+        // Encoding data to send it has a single parameter
+        bytes memory dataSet = abi.encodeWithSignature("setNumber(uint256)", nb);
+        _minimalProxy._delegate(dataSet);
+
+        bytes memory dataGet = abi.encodeWithSignature("getNumber()");
+        bytes32 slot = 0x0000000000000000000000000000000000000000000000000000000000000000;
+
+        // reading directlty the stroage tanks to vm.load(targer_contract, slot)
+        uint256 nb_read_from_storage = uint256 ( vm.load( address( _minimalProxy ), slot) ); 
+
+        // decoding raw bytes data return by abi.decode
+        uint256 _number = abi.decode(
+            _minimalProxy._delegate(dataGet),
+            (uint256)
+        );
+
+        assertEq( nb_read_from_storage, nb);
+        assertEq( _number, nb_read_from_storage);
+    }
 }
