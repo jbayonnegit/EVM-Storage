@@ -33,7 +33,7 @@ contract MinimalProxyStorageTest is Test
         _minimalProxy.setImplementation( address(_logicContract) );
         bytes memory data = abi.encodeWithSignature("setInvariantNumber()");
         _minimalProxy._delegate(data);
-        excludeSenders();
+        excludeSender( address(42) );
     }
 
     /**
@@ -99,7 +99,6 @@ contract MinimalProxyStorageTest is Test
      */
     function invariant_test_shouldBeAlwaysBe42() public
     {
-
         bytes memory dataGet = abi.encodeWithSignature("getInvariantNumber()");
         uint256 _number = abi.decode(
             _minimalProxy._delegate(dataGet),

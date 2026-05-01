@@ -4,7 +4,7 @@ pragma solidity ^0.8.30;
 
 contract Logic {
 
-	uint256	sInvariant = 42;
+	uint256	sInvariant;
 	uint256	srandomNumber;
 
 	function setNumber( uint256 number ) external 
