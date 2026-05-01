@@ -33,6 +33,8 @@ contract MinimalProxyStorageTest is Test
         _minimalProxy.setImplementation( address(_logicContract) );
         bytes memory data = abi.encodeWithSignature("setInvariantNumber()");
         _minimalProxy._delegate(data);
+
+        // This function from StdInvariant allow developpers to exclude address from fuzzing test.
         excludeSender( address(42) );
     }
 

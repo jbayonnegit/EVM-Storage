@@ -2,6 +2,15 @@
 
 pragma solidity ^0.8.30;
 
+
+/**
+ * @title Logic
+ * @author Jbayonne
+ * @notice Very simple get - set contract
+ * 
+ * This contract is used to perfome change in MinimalProxy contract storage. Test can be find
+ * in test/MinimalProxy.t.sol
+ */
 contract Logic {
 
 	uint256	sInvariant;
@@ -38,6 +47,15 @@ contract Logic {
 	}
 }
 
+
+/**
+ * @title Minimal Proxu
+ * @author Jbayonne 
+ * @notice Implementation of a MinimalProxy contract to understand the use of delegatecall
+ * and explore storage layout in contract.
+ * 
+ * The storage of this contract is directly change by the Logic contract above.
+ */
 contract MinimalProxy {
 
 	address	immutable s_owner;
@@ -69,6 +87,14 @@ contract MinimalProxy {
 		return ( logic );
 	}
 
+	/**
+	 * 
+	 * @param doStuff_ -- Raw byte from abi.encodeWithSignature()
+	 * 
+	 * This function is the entrypoint of the contract, delegatecall is in charge of 
+	 * calling the logic contract to perform operation.
+	 * 
+	 */
 	function	_delegate( bytes calldata doStuff_ ) external returns ( bytes memory )
 	{
 		address	mLogicAddress;
@@ -81,6 +107,7 @@ contract MinimalProxy {
 
 		mLogicAddress = address(uint160(uint256(mTmp)));
 
+		// Low-level function ( risk of storage overlap )
 		(bool success, bytes memory returnvalue ) = mLogicAddress.delegatecall( doStuff_ );
 		if ( success )
 			return ( returnvalue );
